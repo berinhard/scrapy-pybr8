@@ -1,0 +1,11 @@
+*.pyc
+*~
+.Python
+/bin/
+/build/
+/include/
+/lib/
+/man/
+/share/
+*.swp
+*.swo
