@@ -2,6 +2,7 @@ from scrapy import log
 from scrapy.http import Request
 from scrapy.spider import BaseSpider
 from scrapy.selector import HtmlXPathSelector
+from scrapy.contrib.loader import XPathItemLoader
 
 from ..items import Pybr8TalksItem
 
@@ -24,12 +25,10 @@ class TalksSpider(BaseSpider):
             yield protocol + domain + path
 
     def parse_talk(self, response):
-        hxs = HtmlXPathSelector(response)
+        loader = XPathItemLoader(item=Pybr8TalksItem(), response=response)
+        loader.add_xpath('title', '//div[@id="proposal"]/h1/text()')
+        loader.add_xpath('description', '//div[@class="twocolumn"]/div[2]/text()[2]')
+        loader.add_xpath('author_name', '//div[@class="twocolumn"]/div/div[2]/h3/text()')
+        loader.add_xpath('author_profile', '//div[@class="twocolumn"]/div/div[2]/text()[3]')
 
-        item = Pybr8TalksItem()
-        item['title'] = hxs.select('//div[@id="proposal"]/h1/text()').extract()[0]
-        item['description'] = hxs.select('//div[@class="twocolumn"]/div[2]/text()[2]').extract()[0]
-        item['author_name'] = hxs.select('//div[@class="twocolumn"]/div/div[2]/h3/text()').extract()[0]
-        item['author_profile'] = hxs.select('//div[@class="twocolumn"]/div/div[2]/text()[3]').extract()[0]
-
-        return item
+        return loader.load_item()
