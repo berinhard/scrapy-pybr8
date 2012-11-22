@@ -3,6 +3,8 @@ from scrapy.http import Request
 from scrapy.spider import BaseSpider
 from scrapy.selector import HtmlXPathSelector
 
+from ..items import Pybr8TalksItem
+
 
 class TalksSpider(BaseSpider):
     name = 'talks'
@@ -22,5 +24,12 @@ class TalksSpider(BaseSpider):
             yield protocol + domain + path
 
     def parse_talk(self, response):
-        self.log('Parsing %s' % response.url, level=log.DEBUG)
-        return None
+        hxs = HtmlXPathSelector(response)
+
+        item = Pybr8TalksItem()
+        item['title'] = hxs.select('//div[@id="proposal"]/h1/text()').extract()[0]
+        item['description'] = hxs.select('//div[@class="twocolumn"]/div[2]/text()[2]').extract()[0]
+        item['author_name'] = hxs.select('//div[@class="twocolumn"]/div/div[2]/h3/text()').extract()[0]
+        item['author_profile'] = hxs.select('//div[@class="twocolumn"]/div/div[2]/text()[3]').extract()[0]
+
+        return item
