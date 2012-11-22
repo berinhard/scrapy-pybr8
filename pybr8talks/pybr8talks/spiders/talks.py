@@ -1,4 +1,5 @@
 from scrapy import log
+from scrapy.http import Request
 from scrapy.spider import BaseSpider
 from scrapy.selector import HtmlXPathSelector
 
@@ -11,8 +12,7 @@ class TalksSpider(BaseSpider):
     def parse(self, response):
         talks_urls = self.get_talks_urls(response)
         for talk_url in talks_urls:
-            self.log('Retrieved URL: %s' % talk_url, level=log.DEBUG)
-        return None
+            yield Request(talk_url, callback=self.parse_talk)
 
     def get_talks_urls(self, response):
         hxs = HtmlXPathSelector(response)
@@ -20,3 +20,7 @@ class TalksSpider(BaseSpider):
             protocol = 'http://'
             domain = self.allowed_domains[0]
             yield protocol + domain + path
+
+    def parse_talk(self, response):
+        self.log('Parsing %s' % response.url, level=log.DEBUG)
+        return None
