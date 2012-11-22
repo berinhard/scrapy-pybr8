@@ -9,3 +9,4 @@
 /share/
 *.swp
 *.swo
+*.jsonlines
