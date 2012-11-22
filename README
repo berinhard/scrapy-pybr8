@@ -1,3 +1,5 @@
+PythonBrasil[8]'s about scrapy
+
 To install (needs virtualenv):
   $ python2.7 bootstrap/bootstrap2.7.py
 
