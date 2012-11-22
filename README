@@ -1,0 +1,6 @@
+To install (needs virtualenv):
+  $ python2.7 bootstrap/bootstrap2.7.py
+
+To run the crawler:
+  $ cd pybr8talks/
+  $ scrapy crawl talks
